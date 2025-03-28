@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Milk Price Trends</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+
+        function drawChart() {
+            const chartDiv = document.getElementById('chart_div');
+            chartDiv.innerHTML = 'Loading data...';
+
+            fetch('APU0000709112.csv')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    try {
+                        // Parse CSV data
+                        const rows = data.trim().split('\n');
+                        const dataArray = [['Date', 'Price']];
+                        
+                        // Skip header row and process data
+                        for (let i = 1; i < rows.length; i++) {
+                            const [date, price] = rows[i].split(',');
+                            if (price.trim() !== '.') {  // Skip missing values
+                                dataArray.push([new Date(date), parseFloat(price)]);
+                            }
+                        }
+
+                        const dataTable = google.visualization.arrayToDataTable(dataArray);
+
+                        const options = {
+                            title: 'Average Price: Milk, Fresh, Whole, Fortified (Cost per Gallon/3.8 Liters) in U.S. City Average',
+                            titleTextStyle: {
+                                fontSize: 16,
+                                bold: true
+                            },
+                            curveType: 'function',
+                            legend: { position: 'bottom' },
+                            width: 900,
+                            height: 500,
+                            hAxis: {
+                                title: 'Year',
+                                format: 'yyyy',
+                                gridlines: { count: 10 }
+                            },
+                            vAxis: {
+                                title: 'Price ($)',
+                                format: 'currency'
+                            }
+                        };
+
+                        const chart = new google.visualization.LineChart(chartDiv);
+                        chart.draw(dataTable, options);
+                    } catch (error) {
+                        console.error('Error processing data:', error);
+                        chartDiv.innerHTML = `Error processing data: ${error.message}<br><br>
+                            Please make sure you're running the local server:<br>
+                            1. Open terminal/command prompt<br>
+                            2. Navigate to this directory<br>
+                            3. Run: python server.py<br>
+                            4. Open: <a href="http://localhost:8000/index.html">http://localhost:8000/index.html</a>`;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading data:', error);
+                    chartDiv.innerHTML = `Error loading data: ${error.message}<br><br>
+                        Please make sure you're running the local server:<br>
+                        1. Open terminal/command prompt<br>
+                        2. Navigate to this directory<br>
+                        3. Run: python server.py<br>
+                        4. Open: <a href="http://localhost:8000/index.html">http://localhost:8000/index.html</a>`;
+                });
+        }
+    </script>
+    <style>
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        #chart_div {
+            margin-top: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="chart_div">Loading...</div>
+    </div>
+</body>
+</html> 
