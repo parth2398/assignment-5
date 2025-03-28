@@ -3,7 +3,7 @@
 This project visualizes the average price of milk in U.S. cities over time using Google Charts.
 
 ## Screenshot
-![Milk Price Chart](screenshot.png)
+![Milk Price Chart](milk_price_chart.png)
 
 ## Data Source
 The visualization uses data from the Federal Reserve Bank of St. Louis Economic Data (FRED):
@@ -26,4 +26,5 @@ The visualization uses data from the Federal Reserve Bank of St. Louis Economic 
 ## Files
 - `index.html` - Contains the Google Charts implementation
 - `server.py` - Local server for viewing the chart
-- `APU0000709112.csv` - Data file containing milk price history 
+- `APU0000709112.csv` - Data file containing milk price history
+- `milk_price_chart.png` - Screenshot of the visualization 
